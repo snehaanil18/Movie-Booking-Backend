@@ -12,6 +12,10 @@ export const createMovie = async (movieData, files) => {
     return await newMovie.save();
 };
 
+export const findMovieByDetails = async(title,genre,director,language) => {
+    return await movies.findOne({title,genre,director,language})
+}
+
 
 // Get all movies 
 export const getAllMovies = async () => {

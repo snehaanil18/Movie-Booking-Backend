@@ -1,6 +1,6 @@
 import { validateMovie } from '../Requests/movieRequest.mjs';
-import { createMovie, getAllMovies, getPopularMovies, getMovie } from '../Repository/movieRepository.mjs';
-import { successResponse, errorResponse } from '../Resources/movieResponse.mjs';
+import { createMovie, getAllMovies, getPopularMovies, getMovie,findMovieByDetails } from '../Repository/movieRepository.mjs';
+import {  sendSuccessResponse, sendErrorResponse  } from '../Resources/movieResponse.mjs';
 import { findUserById } from '../../User/Repository/userRepository.mjs';
 
 // Add Movie
@@ -20,6 +20,10 @@ const addMovie = async (req, res) => {
          // Ensure file is correctly retrieved
         const user = await findUserById(userId);
         if (user && user.role === 'admin'){
+            const existingMovie = await findMovieByDetails(title,genre,director,language);
+            if(existingMovie){
+                return sendErrorResponse(res, null, 'Movie with same details already exist', 409);
+            }
             const movieData = {
                 title,
                 genre,
@@ -33,11 +37,11 @@ const addMovie = async (req, res) => {
             };
 
             const newMovie = await createMovie(movieData, req.file);
-            return successResponse(res, newMovie, 'Movie added successfully');
+            return sendSuccessResponse(res, newMovie, 'Movie added successfully');
         }
 
         else {
-            return errorResponse(res, null, 'Access denied. Only admins can add movies', 403);
+            return sendErrorResponse(res, null, 'Access denied. Only admins can add movies', 403);
         }
         
 
@@ -60,7 +64,7 @@ const addMovie = async (req, res) => {
 //     if (error) {
 //         console.log(error);
         
-//         return errorResponse(res, error.details, 'Validation failed', 400);
+//         return sendErrorResponse(res, error.details, 'Validation failed', 400);
         
 //     }
 
@@ -96,12 +100,12 @@ const addMovie = async (req, res) => {
 //             const newMovie = await createMovie(movieData);
 
 //             // Send success response with the new movie data
-//             return successResponse(res, newMovie, 'Movie added successfully');
+//             return sendSuccessResponse(res, newMovie, 'Movie added successfully');
 //         } else {
-//             return errorResponse(res, null, 'Access denied. Only admins can add movies', 403);
+//             return sendErrorResponse(res, null, 'Access denied. Only admins can add movies', 403);
 //         }
 //     } catch (err) {
-//         return errorResponse(res, null, `Server error: ${err.message}`, 500);
+//         return sendErrorResponse(res, null, `Server error: ${err.message}`, 500);
 //     }
 // };
 
@@ -110,9 +114,9 @@ const addMovie = async (req, res) => {
 const viewMovies = async (req, res) => {
     try {
         const movies = await getAllMovies();            
-        return successResponse(res, movies, 'Movies fetched successfully');
+        return sendSuccessResponse(res, movies, 'Movies fetched successfully');
     } catch (err) {
-        return errorResponse (res, null, `Server error: ${err.message}`, 500);
+        return sendErrorResponse (res, null, `Server error: ${err.message}`, 500);
         
     }
 };
@@ -121,9 +125,9 @@ const viewMovies = async (req, res) => {
 const popularMovies = async(req,res) => {
     try{
         const movies = await getPopularMovies();
-        return successResponse(res, movies, 'Movies fetched successfully');
+        return sendSuccessResponse(res, movies, 'Movies fetched successfully');
     }catch (err) {
-        return errorResponse (res, null, `Server error: ${err.message}`, 500);
+        return sendErrorResponse (res, null, `Server error: ${err.message}`, 500);
     }
 }
 
@@ -133,11 +137,11 @@ export const getAMovie = async (req, res) => {
         const { movieId } = req.params;
         const movie = await getMovie(movieId);
         if (!movie) {
-            return errorResponse(res, null, 'Movie not found', 404);
+            return sendErrorResponse(res, null, 'Movie not found', 404);
         }
-        return successResponse(res, movie, 'Movie fetched successfully');
+        return sendSuccessResponse(res, movie, 'Movie fetched successfully');
     } catch (err) {
-        return errorResponse(res, null, `Server error: ${err.message}`, 500); // Send proper status code here
+        return sendErrorResponse(res, null, `Server error: ${err.message}`, 500); // Send proper status code here
     }
 };
 

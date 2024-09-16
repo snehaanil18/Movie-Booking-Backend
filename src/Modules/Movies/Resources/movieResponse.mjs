@@ -1,4 +1,4 @@
-export const successResponse = (res, data, message = 'Success', statusCode = 200) => {
+export const sendSuccessResponse = (res, data, message = 'Operation successful', statusCode = 200) => {
     return res.status(statusCode).json({
         success: true,
         message,
@@ -6,18 +6,10 @@ export const successResponse = (res, data, message = 'Success', statusCode = 200
     });
 };
 
-export const errorResponse = (res, message = 'Error occurred', statusCode = 400, data = null) => {
-    // Ensure the status code is valid
-    if (typeof statusCode !== 'number') {
-        statusCode = 500; // Default to 500 if the status code is invalid
-    }
-
+export const sendErrorResponse = (res, errors, message = 'Operation failed', statusCode = 400) => {
     return res.status(statusCode).json({
         success: false,
         message,
-        data
+        errors
     });
 };
-
-
-
