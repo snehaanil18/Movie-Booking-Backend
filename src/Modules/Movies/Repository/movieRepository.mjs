@@ -13,6 +13,7 @@ export const createMovie = async (movieData, files) => {
 };
 
 export const findMovieByDetails = async(title,genre,director,language) => {
+    //check if movie with same details exist
     return await movies.findOne({title,genre,director,language})
 }
 

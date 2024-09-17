@@ -12,8 +12,10 @@ async function seedAdmin() {
       return;
     }
 
+    //hash the password before storing it in mongoDB
     const hashedPassword = await bcrypt.hash('adminpassword', 10);
 
+    //details of admin user
     const adminUser = new User({
         name: 'Admin User',          
         email: 'admin@example.com',
@@ -22,6 +24,7 @@ async function seedAdmin() {
         role: 'admin',
     });
 
+    //save and display message
     await adminUser.save();
     console.log('Admin user created successfully');
   } catch (error) {

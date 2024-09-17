@@ -2,17 +2,15 @@
 import jwt from 'jsonwebtoken'
 
 const jwtMiddleware = (req,res,next) => {
-    // console.log('Inside jwt');
     
     try{
-    //get token    
+    //get token from the request header   
     const token = req.headers['authorization'].slice(7)
-    // console.log(token);
     
     //verify the token
-    const jwtVerification = jwt.verify(token,process.env.JWT_SECRET)
+    const jwtVerification = jwt.verify(token,process.env.JWT_SECRET);
+    //set the id in payload
     req.payload = jwtVerification.userId;
-    // console.log(req.payload);
     
     next()
     }

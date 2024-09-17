@@ -11,7 +11,7 @@ const showSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    theater: { 
+    theater: { //store details of theater
         name: { type: String, required: true },  
         capacity: { type: Number, required: true },
         address: { type: String, required: true },
@@ -25,7 +25,7 @@ const showSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    bookedSeats: [Number]
+    bookedSeats: [Number] //set a array for storing booked seats of a particular show
 })
 
 showSchema.pre('save',function (next) {

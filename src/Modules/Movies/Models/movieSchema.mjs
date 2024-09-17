@@ -29,7 +29,7 @@ const movieSchema = new mongoose.Schema({
   },
   cast: [
     {
-      type: String,  // Cast is now an array of strings (names)
+      type: String,  // Cast is an array of strings (names)
     },
   ],
   synopsis: {

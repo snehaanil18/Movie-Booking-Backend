@@ -23,6 +23,7 @@ export const verifyPassword = async (inputPassword, hashedPassword) => {
     return bcrypt.compare(inputPassword, hashedPassword);
 };
 
+//find the user using id
 export const findUserById = async (userId) => {
     return await users.findOne({userId});
 };

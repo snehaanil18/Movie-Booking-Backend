@@ -13,6 +13,7 @@ const register = async (req, res) => {
         return sendErrorResponse(res, errors, 'Validation failed', 400);
     }
 
+    //get details from request body
     const { name, email, phone, role, password } = req.body;
 
     try {
@@ -46,6 +47,7 @@ const login = async (req, res) => {
     try {
         // Find user by email
         const user = await findUserByEmail(email);
+        
         if (!user) {
             return sendErrorResponse(res, null, 'Invalid credentials', 401);
         }
@@ -56,10 +58,11 @@ const login = async (req, res) => {
             return sendErrorResponse(res, null, 'Invalid credentials', 401);
         }
 
+        //sign jwt token
         const token = jwt.sign(
             { userId:user.userId },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' } 
+            { expiresIn: '3h' } 
         );
 
         // Return success response with token
@@ -78,11 +81,14 @@ const login = async (req, res) => {
 
 const getUser = async(req,res) => {
     try{
+        //get id of user from jwt
         const userId = req.payload;
+        //find user using id
         const user = await findUserById(userId);
         if (!user) {
             return sendErrorResponse(res, null, 'User not Found', 409);
         }
+        //send details of user
         return sendSuccessResponse(res, user, 'user fetched successfully');
     }catch (err) {
         console.error(err);

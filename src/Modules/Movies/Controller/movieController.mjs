@@ -15,15 +15,21 @@ const addMovie = async (req, res) => {
         //     });
         // }
 
+
+        //collect the details from request body
         const { title, genre, releaseDate, duration, director, synopsis, language, rating, cast } = req.body;
+        //get userid using jwt
         const userId = req.payload;
          // Ensure file is correctly retrieved
         const user = await findUserById(userId);
+        //confirm the user is admin
         if (user && user.role === 'admin'){
+            //check if movie with same details already exist
             const existingMovie = await findMovieByDetails(title,genre,director,language);
             if(existingMovie){
                 return sendErrorResponse(res, null, 'Movie with same details already exist', 409);
             }
+            //set the incomming data in an object
             const movieData = {
                 title,
                 genre,
@@ -33,9 +39,10 @@ const addMovie = async (req, res) => {
                 synopsis,
                 language,
                 rating: parseFloat(rating),
-                cast, // Ensure cast is sent as JSON string
+                cast, 
             };
 
+            //add the movie details
             const newMovie = await createMovie(movieData, req.file);
             return sendSuccessResponse(res, newMovie, 'Movie added successfully');
         }
@@ -110,9 +117,10 @@ const addMovie = async (req, res) => {
 // };
 
 
-// View All Movies (if needed, similar to viewTheater)
+// View All Movies
 const viewMovies = async (req, res) => {
     try {
+        //get all documents in movie collection
         const movies = await getAllMovies();            
         return sendSuccessResponse(res, movies, 'Movies fetched successfully');
     } catch (err) {
@@ -124,6 +132,7 @@ const viewMovies = async (req, res) => {
 //home page Movies
 const popularMovies = async(req,res) => {
     try{
+        //get the movies with higher rating
         const movies = await getPopularMovies();
         return sendSuccessResponse(res, movies, 'Movies fetched successfully');
     }catch (err) {
@@ -134,8 +143,11 @@ const popularMovies = async(req,res) => {
 //get details of a particular movie
 export const getAMovie = async (req, res) => {
     try {
+        //get the id of particular movie from params
         const { movieId } = req.params;
+        //get details of pariticular movie
         const movie = await getMovie(movieId);
+        //send error response if movie of given id is not found
         if (!movie) {
             return sendErrorResponse(res, null, 'Movie not found', 404);
         }

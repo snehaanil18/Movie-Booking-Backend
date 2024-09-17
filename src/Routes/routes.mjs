@@ -1,6 +1,6 @@
 import express from 'express';
 
-//controller
+//import controller
 import userController from '../Modules/User/Controllers/userController.mjs';
 import theaterController from '../Modules/Theater/Controllers/theaterController.mjs';
 import movieController  from '../Modules/Movies/Controller/movieController.mjs';
@@ -9,15 +9,19 @@ import mailController from '../Utils/Mail Verification/mailController.mjs';
 import bookingController from '../Modules/Booking/Controller/bookingController.mjs';
 import paymentController from '../Utils/Payment/paymentController.mjs';
 
-//middleware
+//import middleware
 import jwtMiddleware from '../Middleware/jwtMiddleware.mjs'
 import multerConfig from '../Middleware/multerMiddleware.mjs';
 
+//set up router
 const router = express.Router();
 
+//register a new user
 router.post('/register-user',userController.register);
 
+//login with registered credentials
 router.post('/login-user',userController.login);
+
 
 router.post('/add-theater',jwtMiddleware,theaterController.addTheater);
 
