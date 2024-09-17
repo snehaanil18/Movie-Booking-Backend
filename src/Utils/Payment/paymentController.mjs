@@ -30,30 +30,48 @@ const createOrder = async (req, res) => {
   }
 };
 
-const verifyPaymentSignature = (orderId, paymentId, signature) => {
-  const razorpaySecret = process.env.RAZORPAY_KEY_SECRET;
-
-  if (!razorpaySecret) {
-      throw new Error('RAZORPAY_SECRET is not defined');
-  }
-
-  const generatedSignature = crypto.createHmac('sha256', razorpaySecret)
-      .update(`${orderId}|${paymentId}`)
-      .digest('hex');
-
-  return generatedSignature === signature;
-};
-
 const verifyPayment = async (req, res) => {
   const { orderId, paymentId, signature } = req.body;
 
-  if (verifyPaymentSignature(orderId, paymentId, signature)) {
-      // Signature is valid, proceed with booking
-      return res.json({ success: true });
+
+  const generatedSignature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(`${orderId}|${paymentId}`)
+      .digest('hex');
+
+
+  if (generatedSignature == signature) {
+      // Payment is verified
+      res.json({ success: true });
   } else {
-      return res.status(400).json({ message: 'Invalid signature' });
+      // Payment verification failed
+      res.json({ success: false });
   }
 };
+
+// const verifyPaymentSignature = (orderId, paymentId, signature) => {
+//   const razorpaySecret = process.env.RAZORPAY_KEY_SECRET;
+
+//   if (!razorpaySecret) {
+//       throw new Error('RAZORPAY_SECRET is not defined');
+//   }
+
+//   const generatedSignature = crypto.createHmac('sha256', razorpaySecret)
+//       .update(`${orderId}|${paymentId}`)
+//       .digest('hex');
+
+//   return generatedSignature === signature;
+// };
+
+// const verifyPayment = async (req, res) => {
+//   const { orderId, paymentId, signature } = req.body;
+
+//   if (verifyPaymentSignature(orderId, paymentId, signature)) {
+//       // Signature is valid, proceed with booking
+//       return res.json({ success: true });
+//   } else {
+//       return res.status(400).json({ message: 'Invalid signature' });
+//   }
+// };
 
 // Endpoint to handle payment verification
 // const verifyPayment = async (req, res) => {

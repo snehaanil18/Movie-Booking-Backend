@@ -145,6 +145,8 @@ export const getAMovie = async (req, res) => {
     }
 };
 
+
+
 const movieController = {
     addMovie,
     viewMovies,

@@ -3,6 +3,7 @@ import { getShow,updateShow } from '../../Shows/Repository/showRepository.mjs';
 import {sendSuccessResponse,sendErrorResponse} from '../Resources/bookingResponse.mjs'
 import { validateBooking } from '../Requests/bookingRequest.mjs';
 import { createBooking } from '../Repository/bookingRepository.mjs';
+import {sendBookingDetails} from '../../../Utils/Twilio/phoneController.mjs' 
 
 const addBooking = async (req, res) => {
     const { error } = validateBooking(req.body);
@@ -60,6 +61,8 @@ const addBooking = async (req, res) => {
         const newBooking = await createBooking(BookingData);
         show.bookedSeats = [...show.bookedSeats, ...seats];
         await updateShow(showTimeId, { bookedSeats: show.bookedSeats });
+
+        await sendBookingDetails(userPhone, BookingData,show.timing);
         return sendSuccessResponse(res, newBooking, 'Booking created successfully');
 
     } catch (error) {
