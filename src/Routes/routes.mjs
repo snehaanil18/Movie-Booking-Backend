@@ -53,6 +53,10 @@ router.post('/add-booking',jwtMiddleware,bookingController.addBooking);
 
 router.post('/create-order',jwtMiddleware,paymentController.createOrder);
 
-router.post('/verify-payment',jwtMiddleware,paymentController.verifyPayment)
+router.post('/verify-payment',jwtMiddleware,paymentController.verifyPayment);
+
+router.delete('/delete-movie/:movieId',jwtMiddleware,movieController.deleteAMovie);
+
+router.delete('/delete-theater/:theaterId',jwtMiddleware,theaterController.deleteTheaterDetails)
 
 export default router;

@@ -27,3 +27,8 @@ export const getAllTheaters = async() => {
     //get details of all theaters in mongoDB
     return await Theater.find();
 }
+
+export const deleteTheater = async(theaterId) => {
+    //delete a particular theater
+    return await Theater.findOneAndDelete({theaterId})
+}

@@ -12,9 +12,9 @@ export const createMovie = async (movieData, files) => {
     return await newMovie.save();
 };
 
-export const findMovieByDetails = async(title,genre,director,language) => {
+export const findMovieByDetails = async (title, genre, director, language) => {
     //check if movie with same details exist
-    return await movies.findOne({title,genre,director,language})
+    return await movies.findOne({ title, genre, director, language })
 }
 
 
@@ -29,10 +29,16 @@ export const getPopularMovies = async () => {
 };
 
 //get a particular movie
-export const getMovie = async(movieId) => {
-    return await movies.findOne({_id:movieId});
+export const getMovie = async (movieId) => {
+    return await movies.findOne({ _id: movieId });
 }
 
-export const getById = async(movieId) => {
-    return await movies.findById({_id:movieId});
+//get a particular movie using id
+export const getById = async (movieId) => {
+    return await movies.findById({ _id: movieId });
+}
+
+//delete a particular movie
+export const deleteMovie = async (movieId) => {
+    return await movies.findOneAndDelete({ movieId })
 }

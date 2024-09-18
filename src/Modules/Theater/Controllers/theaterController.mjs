@@ -1,5 +1,5 @@
 import { validateTheater } from '../Requests/theaterRequest.mjs'
-import { createTheater, findTheaterByDetails, getAllTheaters } from '../Repository/theaterRepository.mjs';
+import { createTheater, findTheaterByDetails, getAllTheaters, deleteTheater } from '../Repository/theaterRepository.mjs';
 import { findUserById } from '../../User/Repository/userRepository.mjs';
 import { sendSuccessResponse, sendErrorResponse } from '../Resources/theaterResponse.mjs';
 
@@ -39,10 +39,8 @@ const addTheater = async (req, res) => {
 };
 
 const viewTheater = async (req, res) => {
-
+    //get userid from jwt
     const userId = req.payload;
-    
-
     try {
         //verify if the get request is from admin user
         const user = await findUserById(userId);
@@ -62,9 +60,28 @@ const viewTheater = async (req, res) => {
     }
 }
 
+const deleteTheaterDetails = async(req,res) => {
+    //get userid from jwt
+    const userId = req.payload;
+    try {
+        //verify if the get request is from admin user
+        const user = await findUserById(userId);
+        if (user && user.role === 'admin'){
+            //get id of particular theater from params
+            const { theaterId } = req.params;
+            const theater = await deleteTheater(theaterId);
+            return sendSuccessResponse(res, theater, 'Theater deleted successfully');
+        }
+    }
+    catch (err) {
+        return sendErrorResponse(res, null, `Server error: ${err.message}`, 500);
+    }
+}
+
 const theaterController = {
     addTheater,
-    viewTheater
+    viewTheater,
+    deleteTheaterDetails 
 }
 
 export default theaterController;
